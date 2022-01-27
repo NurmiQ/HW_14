@@ -1,7 +1,7 @@
 import json
 
 from flask import Flask, request, jsonify
-from functions import get_db
+from functions import get_db, sort_rating
 import sqlite3
 
 app = Flask(__name__)
@@ -58,6 +58,24 @@ def search_year():
                 }
                 response.append(line_dict)
         return jsonify(response)
+
+
+@app.route('/rating/children')
+def rating_children():
+    response = sort_rating(['G'])
+    return jsonify(response)
+
+
+@app.route('/rating/family')
+def rating_family():
+    response = sort_rating(['G', 'PG', 'PG-13'])
+    return jsonify(response)
+
+
+@app.route('/rating/adult')
+def rating_adult():
+    response = sort_rating(['R', 'NC-17'])
+    return jsonify(response)
 
 
 if __name__ == "__main__":
