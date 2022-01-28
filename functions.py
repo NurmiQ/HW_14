@@ -29,3 +29,21 @@ def sort_rating(rating):
         }
         response.append(line_dict)
     return response
+
+
+def get_movie_by_genre(genre):
+    response = []
+    sqlite_query = f"""
+    select title, description
+    from netflix where listed_in like '%{genre}%'
+    order by release_year DESC limit 10"""
+    result = get_db('netflix.db', sqlite_query)
+    for line in result:
+        line_dict = {
+            "title": line[0],
+            "description": line[1],
+        }
+        response.append(line_dict)
+    return response
+
+

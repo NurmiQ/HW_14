@@ -1,7 +1,7 @@
 import json
 
 from flask import Flask, request, jsonify
-from functions import get_db, sort_rating
+from functions import get_db, sort_rating, get_movie_by_genre
 import sqlite3
 
 app = Flask(__name__)
@@ -29,10 +29,10 @@ def search_movie():
             if len(result):
                 response = {
                     "title": result[0][0],
-                    "country" : result[0][1],
-                    "listed_in" : result[0][2],
-                    "release_year" : result[0][3],
-                    "description" : result[0][4],
+                    "country": result[0][1],
+                    "listed_in": result[0][2],
+                    "release_year": result[0][3],
+                    "description": result[0][4],
                 }
         return jsonify(response)
 
@@ -50,7 +50,7 @@ def search_year():
             where release_year between {f_year} and {s_year}
             order by release_year DESC limit 100
             """
-            result = get_db('netflix.db', sqlite_query)       # [(title, year), (title, year)]
+            result = get_db('netflix.db', sqlite_query)  # [(title, year), (title, year)]
             for line in result:
                 line_dict = {
                     'title': line[0],
@@ -75,6 +75,12 @@ def rating_family():
 @app.route('/rating/adult')
 def rating_adult():
     response = sort_rating(['R', 'NC-17'])
+    return jsonify(response)
+
+
+@app.route('/genre/<genre>')
+def search_genre(genre):
+    response = get_movie_by_genre(genre)
     return jsonify(response)
 
 
